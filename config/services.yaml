@@ -27,5 +27,10 @@ services:
         arguments:
             $pokemonApiUrl: '%pokemon_api_url%'
 
+    # Configuration pour UpdatePokemonNamesCommand
+    App\Command\UpdatePokemonNamesCommand:
+        arguments:
+            $pokemonApiUrl: '%pokemon_api_url%'
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

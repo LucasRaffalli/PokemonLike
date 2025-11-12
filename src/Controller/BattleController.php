@@ -53,7 +53,7 @@ class BattleController extends AbstractController
 
     #[Route('/battle/challenge/{id}', name: 'app_battle_challenge', methods: ['POST'])]
     #[IsGranted('ROLE_MEMBER')]
-    public function challenge(string $id, Request $request, UserRepository $userRepository, EntityManagerInterface $entityManager, CsrfTokenManagerInterface $csrfTokenManager): Response
+    public function challenge(string $id, Request $request, UserRepository $userRepository, EntityManagerInterface $entityManager, CsrfTokenManagerInterface $csrfTokenManager, BattleService $battleService): Response
     {
         // Vérifier le token CSRF
         $token = new CsrfToken('battle_challenge_' . $id, $request->request->get('_token'));
@@ -87,6 +87,15 @@ class BattleController extends AbstractController
 
         $entityManager->persist($battle);
         $entityManager->flush();
+
+        // Si c'est un bot, accepter automatiquement avec un délai
+        if (str_ends_with($opponent->getPseudo(), '_BOT')) {
+            $battle->setStatus('waiting');
+            $entityManager->flush();
+
+            $this->addFlash('success', "Combat contre {$opponent->getPseudo()} accepté ! Le combat va commencer...");
+            return $this->redirectToRoute('app_battle_view', ['id' => $battle->getId()]);
+        }
 
         $this->addFlash('success', "Défi envoyé à {$opponent->getPseudo()} !");
 
@@ -165,13 +174,20 @@ class BattleController extends AbstractController
 
     #[Route('/battle/view/{id}', name: 'app_battle_view')]
     #[IsGranted('ROLE_MEMBER')]
-    public function view(Battle $battle): Response
+    public function view(Battle $battle, BattleService $battleService, EntityManagerInterface $entityManager): Response
     {
         $user = $this->getUser();
 
         // Vérifier que l'utilisateur est impliqué dans ce combat
         if ($battle->getChallenger() !== $user && $battle->getOpponent() !== $user) {
             throw $this->createAccessDeniedException();
+        }
+
+        // Si le combat est en attente, le lancer automatiquement
+        if ($battle->getStatus() === 'waiting') {
+            $battle->setStatus('in_progress');
+            $battleService->simulateBattle($battle);
+            $entityManager->flush();
         }
 
         return $this->render('battle/view.html.twig', [

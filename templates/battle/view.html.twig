@@ -9,8 +9,62 @@
       <a href="{{ path('app_battle') }}" class="text-primary hover:text-primary-dark transition">← Retour à l'arène</a>
     </div>
 
-    {# Résumé du combat #}
-    <div class="bg-white rounded-lg shadow-xl p-8 mb-6">
+    {% if battle.status == 'waiting' %}
+      {# Écran d'attente avant le combat #}
+      <div class="bg-white rounded-lg shadow-xl p-8 text-center">
+        <h1 class="text-3xl font-bold mb-8">⚔️ Combat à venir</h1>
+        
+        <div class="grid md:grid-cols-3 gap-6 mb-8">
+          <div class="text-center p-6 bg-blue-50 rounded-lg">
+            <p class="text-sm text-gray-600 mb-2">Challenger</p>
+            <p class="text-2xl font-bold text-primary">{{ battle.challenger.pseudo }}</p>
+          </div>
+
+          <div class="flex items-center justify-center">
+            <span class="text-4xl font-bold text-gray-400">VS</span>
+          </div>
+
+          <div class="text-center p-6 bg-red-50 rounded-lg">
+            <p class="text-sm text-gray-600 mb-2">Adversaire</p>
+            <p class="text-2xl font-bold text-primary">{{ battle.opponent.pseudo }}</p>
+          </div>
+        </div>
+
+        <div class="py-8">
+          <div class="animate-pulse">
+            <p class="text-xl font-bold text-primary mb-4">⏳ Préparation du combat...</p>
+            <p class="text-gray-600">Le combat va commencer dans <span id="countdown">8</span> secondes</p>
+          </div>
+          
+          <div class="mt-8">
+            <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+          </div>
+        </div>
+
+        <script>
+          // Compte à rebours
+          let seconds = 8;
+          const countdownElement = document.getElementById('countdown');
+          
+          const interval = setInterval(() => {
+            seconds--;
+            if (countdownElement) {
+              countdownElement.textContent = seconds;
+            }
+            if (seconds <= 0) {
+              clearInterval(interval);
+            }
+          }, 1000);
+          
+          // Recharger la page après 8 secondes pour lancer le combat
+          setTimeout(() => {
+            window.location.reload();
+          }, 8000);
+        </script>
+      </div>
+    {% else %}
+      {# Résumé du combat #}
+      <div class="bg-white rounded-lg shadow-xl p-8 mb-6">
       <h1 class="text-3xl font-bold text-center mb-8">⚔️ Résultat du Combat</h1>
 
       <div class="grid md:grid-cols-3 gap-6 mb-8">
@@ -53,16 +107,40 @@
     <div class="bg-white rounded-lg shadow-xl p-8">
       <h2 class="text-2xl font-bold mb-4">📋 Détails du combat</h2>
       
-      <div class="bg-gray-50 rounded-lg p-6 max-h-96 overflow-y-auto">
+      <div class="bg-gray-50 rounded-lg p-6 max-h-96 overflow-y-auto" id="battle-log">
         {% if battle.battleLog is not empty %}
-          <div class="space-y-2 font-mono text-sm">
+          <div class="space-y-2 font-mono text-sm" id="log-container">
             {% for entry in battle.battleLog %}
-              <div class="{% if 'VAINQUEUR' in entry.message or '🏆' in entry.message %}bg-green-100 border-l-4 border-green-500 p-2{% elseif '❌' in entry.message %}bg-red-100 border-l-4 border-red-500 p-2{% else %}border-l-2 border-gray-300 pl-2{% endif %}">
+              <div class="log-entry hidden {% if 'VAINQUEUR' in entry.message or '🏆' in entry.message %}bg-green-100 border-l-4 border-green-500 p-2{% elseif '❌' in entry.message %}bg-red-100 border-l-4 border-red-500 p-2{% else %}border-l-2 border-gray-300 pl-2{% endif %}" data-index="{{ loop.index0 }}">
                 <span class="text-gray-500 text-xs">{{ entry.timestamp }}</span>
                 <span class="ml-2">{{ entry.message }}</span>
               </div>
             {% endfor %}
           </div>
+          
+          <script>
+            // Afficher les logs progressivement
+            const logEntries = document.querySelectorAll('.log-entry');
+            const battleLogContainer = document.getElementById('battle-log');
+            let currentIndex = 0;
+            
+            function showNextLog() {
+              if (currentIndex < logEntries.length) {
+                logEntries[currentIndex].classList.remove('hidden');
+                logEntries[currentIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                currentIndex++;
+                
+                // Délai entre chaque ligne (500ms pour les actions importantes, 300ms pour le reste)
+                const message = logEntries[currentIndex - 1].textContent;
+                const delay = (message.includes('⚡') || message.includes('💀') || message.includes('🏆')) ? 800 : 400;
+                
+                setTimeout(showNextLog, delay);
+              }
+            }
+            
+            // Démarrer l'animation après un court délai
+            setTimeout(showNextLog, 500);
+          </script>
         {% else %}
           <p class="text-gray-600 text-center">Aucun détail disponible pour ce combat.</p>
         {% endif %}
@@ -84,6 +162,7 @@
         </a>
       {% endif %}
     </div>
+    {% endif %}
   </div>
 </div>
 {% endblock %}
