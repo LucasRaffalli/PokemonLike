@@ -1,3 +1,49 @@
+@import "tailwindcss";
+@source not "../../public";
+
+@theme {
+    --color-primary: #1E1E1E;
+    --color-primary-dark: #181818;
+    --color-primary-light: #666666;
+    --color-secondary: #FBFDFE;
+    --color-secondary-dark: #9B9B9B;
+    --color-success: #10b981;
+    --color-danger: #ef4444;
+    --color-warning: #f59e0b;
+}
+
 body {
-    background-color: skyblue;
+    font-family: 'Satoshi', sans-serif;
+}
+
+.circle {
+    user-select: none;
+    position: absolute;
+    width: 100%;
+    height: 100vh;
+    z-index: -1;
+}
+
+.circle::after {
+    content: '';
+    position: absolute;
+    height: 50rem;
+    width: 50rem;
+    border-radius: 100%;
+    bottom: -40%;
+    left: -20%;
+    filter: blur(350px);
+    background-color: #353535;
+}
+
+.circle::before {
+    content: '';
+    position: absolute;
+    height: 50rem;
+    width: 50rem;
+    border-radius: 100%;
+    top: -40%;
+    right: -20%;
+    filter: blur(350px);
+    background-color: #353535;
 }
