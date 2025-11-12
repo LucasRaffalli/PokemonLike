@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+  {{ pokemon.name|capitalize }} - Pokédex
+{% endblock %}
+
+{% block body %}
+  <div class="container mx-auto px-4 py-20">
+    <a href="{{ path('app_pokedex') }}" class="inline-block mb-8 text-primary hover:text-primary-dark transition">← Retour au Pokédex</a>
+
+    <div class="bg-white rounded-lg shadow-xl p-8 max-w-4xl mx-auto">
+      <div class="grid md:grid-cols-2 gap-8">
+        <div class="flex items-center justify-center bg-gray-100 rounded-lg p-8">
+          <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/{{ pokemon.id }}.png" alt="{{ pokemon.name }}" class="w-full max-w-sm" />
+        </div>
+
+        <div>
+          <p class="text-gray-500 font-semibold text-xl">#{{ '%03d'|format(pokemon.id) }}</p>
+          <h1 class="text-4xl font-bold text-primary mb-4">{{ pokemon.name|capitalize }}</h1>
+
+          <div class="mb-6">
+            <h2 class="text-xl font-semibold mb-2">Types</h2>
+            <div class="flex gap-2">
+              {% for type in pokemon.types %}
+                <span class="px-4 py-2 rounded-full bg-primary text-white font-semibold">{{ type.type.name|capitalize }}</span>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="mb-6">
+            <h2 class="text-xl font-semibold mb-2">Caractéristiques</h2>
+            <ul class="space-y-2">
+              <li>
+                <strong>Taille:</strong> {{ (pokemon.height / 10)|number_format(1) }} m
+              </li>
+              <li>
+                <strong>Poids:</strong> {{ (pokemon.weight / 10)|number_format(1) }} kg
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h2 class="text-xl font-semibold mb-2">Statistiques</h2>
+            <div class="space-y-3">
+              {% for stat in pokemon.stats %}
+                <div>
+                  <div class="flex justify-between mb-1">
+                    <span class="font-medium">{{ stat.stat.name|replace({ '-': ' ' })|title }}</span>
+                    <span class="font-bold">{{ stat.base_stat }}</span>
+                  </div>
+                  <div class="w-full bg-gray-200 rounded-full h-2">
+                    <div class="bg-primary h-2 rounded-full" style="width: {{ stat.base_stat / 255 * 100 }}%"></div>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-8">
+        <h2 class="text-2xl font-semibold mb-4">Capacités</h2>
+        <div class="flex flex-wrap gap-2">
+          {% for ability in pokemon.abilities %}
+            <span class="px-3 py-1 bg-gray-200 rounded-full text-sm">{{ ability.ability.name|replace({ '-': ' ' })|title }}</span>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

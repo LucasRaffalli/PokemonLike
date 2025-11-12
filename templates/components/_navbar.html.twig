@@ -1,0 +1,28 @@
+<nav class="fixed top-0 left-0 w-full p-4 z-50">
+  <div class=" mx-auto flex justify-between items-center">
+    <a href="{{ path('app_home') }}" class="text-2xl font-bold">POKEMON LIKE</a>
+
+    <ul class="flex gap-6 lowcase">
+    {% if app.user %}
+      <li>
+        <a href="{{ path('app_dashboard') }}" class="hover:invert transition">Dashboard</a>
+      </li>
+    {% endif %}
+    <li>
+      <a href="{{ path('app_pokedex') }}" class="hover:invert transition">Pokédex</a>
+    </li>
+    <li>
+      <a href="#" class="hover:invert transition">Mon Équipe</a>
+    </li>
+    {% if app.user %}
+    {% else %}
+      <li>
+        <a href="{{ path('app_login') }}" class="hover:invert transition">Connexion</a>
+      </li>
+      <li>
+        <a href="{{ path('app_register') }}" class="hover:invert transition">Inscription</a>
+      </li>
+    {% endif %}
+    </ul>
+  </div>
+</nav>

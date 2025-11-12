@@ -7,9 +7,9 @@
 {% block body %}
   <section class="relative w-full h-screen flex flex-col justify-center items-center gap-6 overflow-hidden">
     <div class="circle"></div>
-    <h1 class="text-7xl font-bold">POKEMON LITE</h1>
+    <h1 class="text-7xl font-bold">POKEMON LIKE</h1>
     <p class="text-2xl w-150 text-center text-primary-light">Crée ton compte, compose ton équipe et explore le Pokédex complet grâce à l'API officielle.</p>
-    <button class="bg-primary text-white px-4 p-2 rounded text-1xl uppercase cursor-pointer hover:text-secondary-dark transition">Commencer</button>
-    <a href="#" class="text-primary-light">Explorer</a>
+    <a href="{{ path('app_register') }}" class="bg-primary text-white px-4 p-2 rounded text-1xl uppercase cursor-pointer hover:text-secondary-dark transition">Commencer</a>
+    <a href="{{ path('app_pokedex') }}" class="text-primary-light">Explorer</a>
   </section>
 {% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard - {{ user.pseudo }}{% endblock %}
+
+{% block body %}
+<div class="container mx-auto px-4 py-20">
+  <div class="max-w-6xl mx-auto mt-8">
+    <h1 class="text-4xl font-bold mb-8">Bienvenue, {{ user.pseudo }} !</h1>
+
+    <div class="grid md:grid-cols-3 gap-6 mb-12">
+      <div class="bg-white rounded-lg shadow-lg p-6">
+        <h3 class="text-xl font-semibold mb-2">Mon Profil</h3>
+        <p class="text-gray-600 mb-4">{{ user.email }}</p>
+        <a href="#" class="text-primary hover:underline">Modifier mon profil</a>
+      </div>
+
+      <div class="bg-white rounded-lg shadow-lg p-6">
+        <h3 class="text-xl font-semibold mb-2">Mon Équipe</h3>
+        <p class="text-gray-600 mb-4">0 Pokémon</p>
+        <a href="#" class="text-primary hover:underline">Gérer mon équipe</a>
+      </div>
+
+      <div class="bg-white rounded-lg shadow-lg p-6">
+        <h3 class="text-xl font-semibold mb-2">Pokédex</h3>
+        <p class="text-gray-600 mb-4">Explorer tous les Pokémon</p>
+        <a href="{{ path('app_pokedex') }}" class="text-primary hover:underline">Voir le Pokédex</a>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-lg p-6">
+      <h2 class="text-2xl font-bold mb-4">Actions rapides</h2>
+      <div class="flex flex-wrap gap-4">
+        <a href="{{ path('app_pokedex') }}" class="bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary-dark transition">
+          Découvrir des Pokémon
+        </a>
+        <a href="#" class="bg-secondary border-2 border-primary text-primary px-6 py-3 rounded-lg hover:bg-gray-100 transition">
+          Créer une équipe
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
