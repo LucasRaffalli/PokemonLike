@@ -30,6 +30,7 @@
               </button>
             {% else %}
               <form method="post" action="{{ path('app_team_add', {pokemonId: pokemon.id}) }}" class="mb-6">
+                <input type="hidden" name="_token" value="{{ csrf_token('team_add_' ~ pokemon.id) }}">
                 <input type="hidden" name="pokemonName" value="{{ pokemon.name|capitalize }}">
                 <input type="hidden" name="pokemonImage" value="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/{{ pokemon.id }}.png">
                 <button type="submit" class="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-primary-dark transition">

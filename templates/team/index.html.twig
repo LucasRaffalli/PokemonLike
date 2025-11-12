@@ -52,6 +52,7 @@
               <h3 class="text-lg font-bold text-primary mb-3">{{ teamPokemon.pokemonName }}</h3>
               
               <form method="post" action="{{ path('app_team_remove', {id: teamPokemon.id}) }}" onsubmit="return confirm('Voulez-vous vraiment retirer {{ teamPokemon.pokemonName }} de votre équipe ?');">
+                <input type="hidden" name="_token" value="{{ csrf_token('team_remove_' ~ teamPokemon.id) }}">
                 <button type="submit" class="w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition">
                   Retirer de l'équipe
                 </button>

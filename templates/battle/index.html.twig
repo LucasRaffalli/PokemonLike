@@ -47,11 +47,13 @@
               </div>
               <div class="flex gap-2">
                 <form method="post" action="{{ path('app_battle_accept', {id: battle.id}) }}" class="inline">
+                  <input type="hidden" name="_token" value="{{ csrf_token('battle_accept_' ~ battle.id) }}">
                   <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition">
                     ✓ Accepter
                   </button>
                 </form>
                 <form method="post" action="{{ path('app_battle_decline', {id: battle.id}) }}" class="inline">
+                  <input type="hidden" name="_token" value="{{ csrf_token('battle_decline_' ~ battle.id) }}">
                   <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition">
                     ✗ Refuser
                   </button>
@@ -76,6 +78,7 @@
               <h3 class="font-bold text-lg mb-2">{{ opponent.pseudo }}</h3>
               <p class="text-sm text-gray-600 mb-3">{{ opponent.email }}</p>
               <form method="post" action="{{ path('app_battle_challenge', {id: opponent.id.toRfc4122}) }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('battle_challenge_' ~ opponent.id.toRfc4122) }}">
                 <button type="submit" class="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary-dark transition">
                   ⚔️ Défier
                 </button>

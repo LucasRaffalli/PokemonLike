@@ -10,6 +10,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Security\Csrf\CsrfToken;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
 class TeamController extends AbstractController
 {
@@ -35,8 +37,16 @@ class TeamController extends AbstractController
         int $pokemonId,
         Request $request,
         TeamPokemonRepository $teamPokemonRepository,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        CsrfTokenManagerInterface $csrfTokenManager
     ): Response {
+        // Vérifier le token CSRF
+        $token = new CsrfToken('team_add_' . $pokemonId, $request->request->get('_token'));
+        if (!$csrfTokenManager->isTokenValid($token)) {
+            $this->addFlash('error', 'Token de sécurité invalide.');
+            return $this->redirectToRoute('app_team');
+        }
+
         $user = $this->getUser();
         
         if ($teamPokemonRepository->countByUser($user) >= 6) {
@@ -68,8 +78,15 @@ class TeamController extends AbstractController
 
     #[Route('/team/remove/{id}', name: 'app_team_remove', methods: ['POST'])]
     #[IsGranted('ROLE_MEMBER')]
-    public function remove(TeamPokemon $teamPokemon, EntityManagerInterface $entityManager): Response
+    public function remove(TeamPokemon $teamPokemon, Request $request, EntityManagerInterface $entityManager, CsrfTokenManagerInterface $csrfTokenManager): Response
     {
+        // Vérifier le token CSRF
+        $token = new CsrfToken('team_remove_' . $teamPokemon->getId(), $request->request->get('_token'));
+        if (!$csrfTokenManager->isTokenValid($token)) {
+            $this->addFlash('error', 'Token de sécurité invalide.');
+            return $this->redirectToRoute('app_team');
+        }
+
         if ($teamPokemon->getUser() !== $this->getUser()) {
             throw $this->createAccessDeniedException();
         }

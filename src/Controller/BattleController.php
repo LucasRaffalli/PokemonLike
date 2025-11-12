@@ -8,9 +8,12 @@ use App\Repository\UserRepository;
 use App\Service\BattleService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Security\Csrf\CsrfToken;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
 class BattleController extends AbstractController
 {
@@ -50,8 +53,15 @@ class BattleController extends AbstractController
 
     #[Route('/battle/challenge/{id}', name: 'app_battle_challenge', methods: ['POST'])]
     #[IsGranted('ROLE_MEMBER')]
-    public function challenge(string $id, UserRepository $userRepository, EntityManagerInterface $entityManager): Response
+    public function challenge(string $id, Request $request, UserRepository $userRepository, EntityManagerInterface $entityManager, CsrfTokenManagerInterface $csrfTokenManager): Response
     {
+        // Vérifier le token CSRF
+        $token = new CsrfToken('battle_challenge_' . $id, $request->request->get('_token'));
+        if (!$csrfTokenManager->isTokenValid($token)) {
+            $this->addFlash('error', 'Token de sécurité invalide.');
+            return $this->redirectToRoute('app_battle');
+        }
+
         $challenger = $this->getUser();
         $opponent = $userRepository->find($id);
 
@@ -85,8 +95,15 @@ class BattleController extends AbstractController
 
     #[Route('/battle/accept/{id}', name: 'app_battle_accept', methods: ['POST'])]
     #[IsGranted('ROLE_MEMBER')]
-    public function accept(Battle $battle, BattleService $battleService, EntityManagerInterface $entityManager): Response
+    public function accept(Battle $battle, Request $request, BattleService $battleService, EntityManagerInterface $entityManager, CsrfTokenManagerInterface $csrfTokenManager): Response
     {
+        // Vérifier le token CSRF
+        $token = new CsrfToken('battle_accept_' . $battle->getId(), $request->request->get('_token'));
+        if (!$csrfTokenManager->isTokenValid($token)) {
+            $this->addFlash('error', 'Token de sécurité invalide.');
+            return $this->redirectToRoute('app_battle');
+        }
+
         $user = $this->getUser();
 
         if ($battle->getOpponent() !== $user) {
@@ -118,8 +135,15 @@ class BattleController extends AbstractController
 
     #[Route('/battle/decline/{id}', name: 'app_battle_decline', methods: ['POST'])]
     #[IsGranted('ROLE_MEMBER')]
-    public function decline(Battle $battle, EntityManagerInterface $entityManager): Response
+    public function decline(Battle $battle, Request $request, EntityManagerInterface $entityManager, CsrfTokenManagerInterface $csrfTokenManager): Response
     {
+        // Vérifier le token CSRF
+        $token = new CsrfToken('battle_decline_' . $battle->getId(), $request->request->get('_token'));
+        if (!$csrfTokenManager->isTokenValid($token)) {
+            $this->addFlash('error', 'Token de sécurité invalide.');
+            return $this->redirectToRoute('app_battle');
+        }
+
         $user = $this->getUser();
 
         if ($battle->getOpponent() !== $user) {
