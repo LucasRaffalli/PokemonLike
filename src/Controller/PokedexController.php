@@ -72,8 +72,24 @@ class PokedexController extends AbstractController
             return $response->toArray();
         });
 
+        $teamCount = 0;
+        $isInTeam = false;
+        if ($this->getUser()) {
+            $teamPokemons = $this->getUser()->getTeamPokemons();
+            $teamCount = $teamPokemons->count();
+            
+            foreach ($teamPokemons as $teamPokemon) {
+                if ($teamPokemon->getPokemonId() === $id) {
+                    $isInTeam = true;
+                    break;
+                }
+            }
+        }
+
         return $this->render('pokedex/detail.html.twig', [
             'pokemon' => $pokemon,
+            'teamCount' => $teamCount,
+            'isInTeam' => $isInTeam,
         ]);
     }
 }

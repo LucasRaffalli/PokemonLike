@@ -1,0 +1,89 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Résultat du combat{% endblock %}
+
+{% block body %}
+<div class="container mx-auto px-4 py-20">
+  <div class="max-w-4xl mx-auto mt-8">
+    <div class="mb-6">
+      <a href="{{ path('app_battle') }}" class="text-primary hover:text-primary-dark transition">← Retour à l'arène</a>
+    </div>
+
+    {# Résumé du combat #}
+    <div class="bg-white rounded-lg shadow-xl p-8 mb-6">
+      <h1 class="text-3xl font-bold text-center mb-8">⚔️ Résultat du Combat</h1>
+
+      <div class="grid md:grid-cols-3 gap-6 mb-8">
+        <div class="text-center p-6 bg-blue-50 rounded-lg {% if battle.winner == battle.challenger %}ring-4 ring-green-500{% endif %}">
+          <p class="text-sm text-gray-600 mb-2">Challenger</p>
+          <p class="text-2xl font-bold text-primary">{{ battle.challenger.pseudo }}</p>
+          {% if battle.winner == battle.challenger %}
+            <p class="text-green-600 font-bold mt-2">🏆 VAINQUEUR</p>
+          {% endif %}
+        </div>
+
+        <div class="flex items-center justify-center">
+          <span class="text-4xl font-bold text-gray-400">VS</span>
+        </div>
+
+        <div class="text-center p-6 bg-red-50 rounded-lg {% if battle.winner == battle.opponent %}ring-4 ring-green-500{% endif %}">
+          <p class="text-sm text-gray-600 mb-2">Adversaire</p>
+          <p class="text-2xl font-bold text-primary">{{ battle.opponent.pseudo }}</p>
+          {% if battle.winner == battle.opponent %}
+            <p class="text-green-600 font-bold mt-2">🏆 VAINQUEUR</p>
+          {% endif %}
+        </div>
+      </div>
+
+      {% if not battle.winner %}
+        <div class="text-center py-4 bg-gray-100 rounded-lg">
+          <p class="text-xl font-bold text-gray-600">🤝 Match Nul !</p>
+        </div>
+      {% endif %}
+
+      <div class="text-center text-sm text-gray-500 mt-4">
+        Combat du {{ battle.createdAt|date('d/m/Y à H:i') }}
+        {% if battle.completedAt %}
+          - Terminé le {{ battle.completedAt|date('d/m/Y à H:i') }}
+        {% endif %}
+      </div>
+    </div>
+
+    {# Log du combat #}
+    <div class="bg-white rounded-lg shadow-xl p-8">
+      <h2 class="text-2xl font-bold mb-4">📋 Détails du combat</h2>
+      
+      <div class="bg-gray-50 rounded-lg p-6 max-h-96 overflow-y-auto">
+        {% if battle.battleLog is not empty %}
+          <div class="space-y-2 font-mono text-sm">
+            {% for entry in battle.battleLog %}
+              <div class="{% if 'VAINQUEUR' in entry.message or '🏆' in entry.message %}bg-green-100 border-l-4 border-green-500 p-2{% elseif '❌' in entry.message %}bg-red-100 border-l-4 border-red-500 p-2{% else %}border-l-2 border-gray-300 pl-2{% endif %}">
+                <span class="text-gray-500 text-xs">{{ entry.timestamp }}</span>
+                <span class="ml-2">{{ entry.message }}</span>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="text-gray-600 text-center">Aucun détail disponible pour ce combat.</p>
+        {% endif %}
+      </div>
+    </div>
+
+    {# Actions #}
+    <div class="mt-6 flex gap-4 justify-center">
+      <a href="{{ path('app_battle') }}" class="bg-primary text-white px-8 py-3 rounded-lg hover:bg-primary-dark transition">
+        Retour à l'arène
+      </a>
+      {% if battle.winner == app.user %}
+        <a href="{{ path('app_battle') }}" class="bg-green-500 text-white px-8 py-3 rounded-lg hover:bg-green-600 transition">
+          🎉 Lancer un nouveau défi
+        </a>
+      {% else %}
+        <a href="{{ path('app_team') }}" class="bg-blue-500 text-white px-8 py-3 rounded-lg hover:bg-blue-600 transition">
+          💪 Améliorer mon équipe
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

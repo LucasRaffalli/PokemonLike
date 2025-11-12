@@ -5,36 +5,51 @@
 {% block body %}
 <div class="container mx-auto px-4 py-20">
   <div class="max-w-6xl mx-auto mt-8">
-    <h1 class="text-4xl font-bold mb-8">Bienvenue, {{ user.pseudo }} !</h1>
+    <div class="flex justify-between items-center mb-8">
+      <h1 class="text-4xl font-bold">Bienvenue, {{ user.pseudo }} !</h1>
+      <a href="{{ path('app_logout') }}" class="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600 transition">
+        🚪 Déconnexion
+      </a>
+    </div>
 
     <div class="grid md:grid-cols-3 gap-6 mb-12">
       <div class="bg-white rounded-lg shadow-lg p-6">
         <h3 class="text-xl font-semibold mb-2">Mon Profil</h3>
         <p class="text-gray-600 mb-4">{{ user.email }}</p>
-        <a href="#" class="text-primary hover:underline">Modifier mon profil</a>
+        <a href="{{ path('app_profile') }}" class="text-primary hover:underline">Modifier mon profil</a>
       </div>
 
       <div class="bg-white rounded-lg shadow-lg p-6">
         <h3 class="text-xl font-semibold mb-2">Mon Équipe</h3>
-        <p class="text-gray-600 mb-4">0 Pokémon</p>
-        <a href="#" class="text-primary hover:underline">Gérer mon équipe</a>
+        <p class="text-gray-600 mb-4">
+          <span class="text-3xl font-bold text-primary">{{ teamCount }}</span>/6 Pokémon
+        </p>
+        <a href="{{ path('app_team') }}" class="text-primary hover:underline">Gérer mon équipe</a>
       </div>
 
       <div class="bg-white rounded-lg shadow-lg p-6">
-        <h3 class="text-xl font-semibold mb-2">Pokédex</h3>
-        <p class="text-gray-600 mb-4">Explorer tous les Pokémon</p>
-        <a href="{{ path('app_pokedex') }}" class="text-primary hover:underline">Voir le Pokédex</a>
+        <h3 class="text-xl font-semibold mb-2">Combats</h3>
+        <div class="mb-4">
+          <p class="text-gray-600">🏆 <span class="font-bold text-green-600">{{ wins }}</span> victoires</p>
+          {% if pendingBattlesCount > 0 %}
+            <p class="text-yellow-600 font-semibold mt-2">⚠️ {{ pendingBattlesCount }} défi(s) en attente</p>
+          {% endif %}
+        </div>
+        <a href="{{ path('app_battle') }}" class="text-primary hover:underline">Aller à l'arène</a>
       </div>
     </div>
 
-    <div class="bg-white rounded-lg shadow-lg p-6">
+    <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
       <h2 class="text-2xl font-bold mb-4">Actions rapides</h2>
       <div class="flex flex-wrap gap-4">
         <a href="{{ path('app_pokedex') }}" class="bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary-dark transition">
-          Découvrir des Pokémon
+          🔍 Découvrir des Pokémon
         </a>
-        <a href="#" class="bg-secondary border-2 border-primary text-primary px-6 py-3 rounded-lg hover:bg-gray-100 transition">
-          Créer une équipe
+        <a href="{{ path('app_team') }}" class="bg-secondary border-2 border-primary text-primary px-6 py-3 rounded-lg hover:bg-gray-100 transition">
+          👥 Gérer mon équipe
+        </a>
+        <a href="{{ path('app_battle') }}" class="bg-gradient-to-r from-red-500 to-orange-500 text-white px-6 py-3 rounded-lg hover:from-red-600 hover:to-orange-600 transition">
+          ⚔️ Lancer un combat
         </a>
       </div>
     </div>

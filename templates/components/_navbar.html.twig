@@ -11,10 +11,16 @@
     <li>
       <a href="{{ path('app_pokedex') }}" class="hover:invert transition">Pokédex</a>
     </li>
-    <li>
-      <a href="#" class="hover:invert transition">Mon Équipe</a>
-    </li>
     {% if app.user %}
+    <li>
+      <a href="{{ path('app_team') }}" class="hover:invert transition">Mon Équipe</a>
+    </li>
+    <li>
+      <a href="{{ path('app_battle') }}" class="hover:invert transition">⚔️ Combats</a>
+    </li>
+    <li>
+      <a href="{{ path('app_logout') }}" class="hover:invert transition">Déconnexion</a>
+    </li>
     {% else %}
       <li>
         <a href="{{ path('app_login') }}" class="hover:invert transition">Connexion</a>

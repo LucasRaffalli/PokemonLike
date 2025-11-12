@@ -22,5 +22,10 @@ services:
         arguments:
             $pokemonApiUrl: '%pokemon_api_url%'
 
+    # Configuration spécifique pour BattleService
+    App\Service\BattleService:
+        arguments:
+            $pokemonApiUrl: '%pokemon_api_url%'
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

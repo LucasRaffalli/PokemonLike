@@ -18,6 +18,27 @@
           <p class="text-gray-500 font-semibold text-xl">#{{ '%03d'|format(pokemon.id) }}</p>
           <h1 class="text-4xl font-bold text-primary mb-4">{{ pokemon.name|capitalize }}</h1>
 
+          {% if app.user %}
+            {% if teamCount >= 6 %}
+              <button disabled class="w-full bg-gray-400 text-white py-3 rounded-lg font-semibold cursor-not-allowed mb-2">
+                Équipe complète (6/6)
+              </button>
+              <p class="text-sm text-gray-600 text-center">Retirez un Pokémon de votre équipe pour en ajouter un autre</p>
+            {% elseif isInTeam %}
+              <button disabled class="w-full bg-gray-400 text-white py-3 rounded-lg font-semibold cursor-not-allowed mb-2">
+                Déjà dans votre équipe
+              </button>
+            {% else %}
+              <form method="post" action="{{ path('app_team_add', {pokemonId: pokemon.id}) }}" class="mb-6">
+                <input type="hidden" name="pokemonName" value="{{ pokemon.name|capitalize }}">
+                <input type="hidden" name="pokemonImage" value="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/{{ pokemon.id }}.png">
+                <button type="submit" class="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-primary-dark transition">
+                  Ajouter à mon équipe ({{ teamCount }}/6)
+                </button>
+              </form>
+            {% endif %}
+          {% endif %}
+
           <div class="mb-6">
             <h2 class="text-xl font-semibold mb-2">Types</h2>
             <div class="flex gap-2">
