@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\BattleRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: BattleRepository::class)]
 class Battle
@@ -16,10 +17,12 @@ class Battle
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false, referencedColumnName: 'id')]
+    #[Assert\NotNull(message: 'Le challenger est requis')]
     private ?User $challenger = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false, referencedColumnName: 'id')]
+    #[Assert\NotNull(message: 'L\'adversaire est requis')]
     private ?User $opponent = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
@@ -27,7 +30,12 @@ class Battle
     private ?User $winner = null;
 
     #[ORM\Column(length: 20)]
-    private ?string $status = null; // pending, in_progress, completed, cancelled
+    #[Assert\NotBlank(message: 'Le statut est requis')]
+    #[Assert\Choice(
+        choices: ['pending', 'waiting', 'in_progress', 'completed', 'cancelled'],
+        message: 'Le statut {{ value }} n\'est pas valide'
+    )]
+    private ?string $status = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;

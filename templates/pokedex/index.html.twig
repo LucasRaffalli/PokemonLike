@@ -8,13 +8,19 @@
   <div class="container mx-auto px-4 py-20">
     <h1 class="text-5xl font-bold text-center mb-12 mt-8">Pokédex</h1>
 
-    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6" role="list" aria-label="Liste des Pokémon">
       {% for pokemon in pokemons %}
-        <a href="{{ path('app_pokedex_detail', {id: pokemon.id}) }}" class="bg-white rounded-lg shadow-lg p-4 hover:shadow-xl transition-all hover:scale-105">
+        <a href="{{ path('app_pokedex_detail', {id: pokemon.id}) }}" 
+           class="bg-white rounded-lg shadow-lg p-4 hover:shadow-xl transition-all hover:scale-105 focus:outline-none focus:ring-4 focus:ring-primary focus:ring-opacity-50"
+           role="listitem"
+           aria-label="Voir les détails de {{ pokemon.name }}">
           <div class="aspect-square flex items-center justify-center bg-gray-100 rounded-lg mb-3">
-            <img src="{{ pokemon.image }}" alt="{{ pokemon.name }}" class="w-full h-full object-contain p-4" loading="lazy">
+            <img src="{{ pokemon.image }}" 
+                 alt="Image de {{ pokemon.name }}" 
+                 class="w-full h-full object-contain p-4" 
+                 loading="lazy">
           </div>
-          <p class="text-sm text-gray-500 font-semibold">#{{ '%03d'|format(pokemon.id) }}</p>
+          <p class="text-sm text-gray-500 font-semibold" aria-label="Numéro du Pokédex">#{{ '%03d'|format(pokemon.id) }}</p>
           <h3 class="text-lg font-bold text-primary">{{ pokemon.name }}</h3>
         </a>
       {% endfor %}
@@ -23,7 +29,8 @@
     {% if hasMore %}
       <div class="text-center mt-12">
         <a href="{{ path('app_pokedex', {loadMore: true}) }}" 
-           class="bg-primary text-white px-8 py-3 rounded-lg text-xl uppercase hover:bg-primary-dark transition inline-block">
+           class="bg-primary text-white px-8 py-3 rounded-lg text-xl uppercase hover:bg-primary-dark transition inline-block focus:outline-none focus:ring-4 focus:ring-primary focus:ring-opacity-50"
+           aria-label="Charger 50 Pokémon supplémentaires">
           Charger 50 Pokémon de plus
         </a>
       </div>

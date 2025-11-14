@@ -19,11 +19,15 @@
     <div class="flex justify-between items-center mb-8">
       <h1 class="text-4xl font-bold">Mon Équipe ({{ teamCount }}/6)</h1>
       {% if teamCount >= 6 %}
-        <button disabled class="bg-gray-400 text-white px-6 py-2 rounded-lg cursor-not-allowed">
+        <button disabled 
+                class="bg-gray-400 text-white px-6 py-2 rounded-lg cursor-not-allowed"
+                aria-label="Équipe complète, impossible d'ajouter plus de Pokémon">
           Équipe complète
         </button>
       {% else %}
-        <a href="{{ path('app_pokedex') }}" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary-dark transition">
+        <a href="{{ path('app_pokedex') }}" 
+           class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary-dark transition focus:outline-none focus:ring-4 focus:ring-primary focus:ring-opacity-50"
+           aria-label="Ajouter un Pokémon à votre équipe">
           Ajouter un Pokémon
         </a>
       {% endif %}
@@ -32,28 +36,33 @@
     <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
       <h2 class="text-2xl font-semibold mb-4">Mes Pokémon</h2>
       
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="team-pokemon">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="team-pokemon" role="list" aria-label="Votre équipe de Pokémon">
         {% if teamPokemons is empty %}
           <div class="text-center py-12 col-span-full">
-            <div class="text-6xl mb-4">🎯</div>
+            <div class="text-6xl mb-4" aria-hidden="true">🎯</div>
             <p class="text-xl text-gray-600 mb-4">Votre équipe est vide</p>
             <p class="text-gray-500 mb-6">Commencez à construire votre équipe en ajoutant des Pokémon depuis le Pokédex !</p>
-            <a href="{{ path('app_pokedex') }}" class="inline-block bg-primary text-white px-8 py-3 rounded-lg hover:bg-primary-dark transition">
+            <a href="{{ path('app_pokedex') }}" 
+               class="inline-block bg-primary text-white px-8 py-3 rounded-lg hover:bg-primary-dark transition focus:outline-none focus:ring-4 focus:ring-primary focus:ring-opacity-50">
               Explorer le Pokédex
             </a>
           </div>
         {% else %}
           {% for teamPokemon in teamPokemons %}
-            <div class="bg-gray-50 rounded-lg p-4 relative">
+            <div class="bg-gray-50 rounded-lg p-4 relative" role="listitem">
               <div class="aspect-square flex items-center justify-center bg-white rounded-lg mb-3">
-                <img src="{{ teamPokemon.pokemonImage }}" alt="{{ teamPokemon.pokemonName }}" class="w-full h-full object-contain p-4">
+                <img src="{{ teamPokemon.pokemonImage }}" 
+                     alt="Image de {{ teamPokemon.pokemonName }}" 
+                     class="w-full h-full object-contain p-4">
               </div>
-              <p class="text-sm text-gray-500 font-semibold">#{{ '%03d'|format(teamPokemon.pokemonId) }}</p>
+              <p class="text-sm text-gray-500 font-semibold" aria-label="Numéro du Pokédex">#{{ '%03d'|format(teamPokemon.pokemonId) }}</p>
               <h3 class="text-lg font-bold text-primary mb-3">{{ teamPokemon.pokemonName }}</h3>
               
               <form method="post" action="{{ path('app_team_remove', {id: teamPokemon.id}) }}" onsubmit="return confirm('Voulez-vous vraiment retirer {{ teamPokemon.pokemonName }} de votre équipe ?');">
                 <input type="hidden" name="_token" value="{{ csrf_token('team_remove_' ~ teamPokemon.id) }}">
-                <button type="submit" class="w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition">
+                <button type="submit" 
+                        class="w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition focus:outline-none focus:ring-4 focus:ring-red-300"
+                        aria-label="Retirer {{ teamPokemon.pokemonName }} de l'équipe">
                   Retirer de l'équipe
                 </button>
               </form>

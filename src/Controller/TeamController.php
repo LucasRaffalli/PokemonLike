@@ -12,6 +12,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class TeamController extends AbstractController
 {
@@ -78,7 +79,7 @@ class TeamController extends AbstractController
 
     #[Route('/team/remove/{id}', name: 'app_team_remove', methods: ['POST'])]
     #[IsGranted('ROLE_MEMBER')]
-    public function remove(TeamPokemon $teamPokemon, Request $request, EntityManagerInterface $entityManager, CsrfTokenManagerInterface $csrfTokenManager): Response
+    public function remove(TeamPokemon $teamPokemon, Request $request, EntityManagerInterface $entityManager, CsrfTokenManagerInterface $csrfTokenManager, ValidatorInterface $validator): Response
     {
         // Vérifier le token CSRF
         $token = new CsrfToken('team_remove_' . $teamPokemon->getId(), $request->request->get('_token'));

@@ -10,10 +10,12 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[UniqueEntity(fields: ['email'], message: 'Un compte existe déjà avec cet email')]
+#[UniqueEntity(fields: ['pseudo'], message: 'Ce pseudo est déjà utilisé')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -21,9 +23,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?Uuid $id = null;
 
     #[ORM\Column(length: 180)]
+    #[Assert\NotBlank(message: 'Le pseudo est requis')]
+    #[Assert\Length(
+        min: 3,
+        max: 50,
+        minMessage: 'Le pseudo doit contenir au moins {{ limit }} caractères',
+        maxMessage: 'Le pseudo ne peut pas dépasser {{ limit }} caractères'
+    )]
+    #[Assert\Regex(
+        pattern: '/^[a-zA-Z0-9_]+$/',
+        message: 'Le pseudo ne peut contenir que des lettres, chiffres et underscores'
+    )]
     private ?string $pseudo = null;
 
     #[ORM\Column(length: 180, unique: true)]
+    #[Assert\NotBlank(message: 'L\'email est requis')]
+    #[Assert\Email(message: 'L\'email {{ value }} n\'est pas valide')]
     private ?string $email = null;
 
     #[ORM\Column]

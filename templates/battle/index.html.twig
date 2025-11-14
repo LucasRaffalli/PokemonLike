@@ -19,24 +19,24 @@
     <h1 class="text-4xl font-bold mb-8">⚔️ Arène de Combat</h1>
 
     {# Statistiques #}
-    <div class="grid md:grid-cols-3 gap-6 mb-8">
+    <div class="grid md:grid-cols-3 gap-6 mb-8" role="region" aria-label="Statistiques de combat">
       <div class="bg-gradient-to-br from-green-500 to-green-600 text-white rounded-lg shadow-lg p-6">
         <h3 class="text-lg font-semibold mb-2">Victoires</h3>
-        <p class="text-4xl font-bold">{{ wins }}</p>
+        <p class="text-4xl font-bold" aria-label="{{ wins }} victoires">{{ wins }}</p>
       </div>
       <div class="bg-gradient-to-br from-red-500 to-red-600 text-white rounded-lg shadow-lg p-6">
         <h3 class="text-lg font-semibold mb-2">Défaites</h3>
-        <p class="text-4xl font-bold">{{ losses }}</p>
+        <p class="text-4xl font-bold" aria-label="{{ losses }} défaites">{{ losses }}</p>
       </div>
       <div class="bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-lg shadow-lg p-6">
         <h3 class="text-lg font-semibold mb-2">Total</h3>
-        <p class="text-4xl font-bold">{{ totalBattles }}</p>
+        <p class="text-4xl font-bold" aria-label="{{ totalBattles }} combats au total">{{ totalBattles }}</p>
       </div>
     </div>
 
     {# Défis en attente #}
     {% if pendingBattles is not empty %}
-      <div class="bg-yellow-50 border-2 border-yellow-400 rounded-lg p-6 mb-8">
+      <div class="bg-yellow-50 border-2 border-yellow-400 rounded-lg p-6 mb-8" role="region" aria-label="Défis en attente">
         <h2 class="text-2xl font-bold mb-4">📬 Défis reçus ({{ pendingBattles|length }})</h2>
         <div class="space-y-4">
           {% for battle in pendingBattles %}
@@ -48,13 +48,17 @@
               <div class="flex gap-2">
                 <form method="post" action="{{ path('app_battle_accept', {id: battle.id}) }}" class="inline">
                   <input type="hidden" name="_token" value="{{ csrf_token('battle_accept_' ~ battle.id) }}">
-                  <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition">
+                  <button type="submit" 
+                          class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition focus:outline-none focus:ring-4 focus:ring-green-300"
+                          aria-label="Accepter le défi de {{ battle.challenger.pseudo }}">
                     ✓ Accepter
                   </button>
                 </form>
                 <form method="post" action="{{ path('app_battle_decline', {id: battle.id}) }}" class="inline">
                   <input type="hidden" name="_token" value="{{ csrf_token('battle_decline_' ~ battle.id) }}">
-                  <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition">
+                  <button type="submit" 
+                          class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition focus:outline-none focus:ring-4 focus:ring-red-300"
+                          aria-label="Refuser le défi de {{ battle.challenger.pseudo }}">
                     ✗ Refuser
                   </button>
                 </form>
@@ -66,25 +70,27 @@
     {% endif %}
 
     {# Liste des adversaires #}
-    <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+    <div class="bg-white rounded-lg shadow-lg p-6 mb-8" role="region" aria-label="Liste des adversaires">
       <h2 class="text-2xl font-bold mb-4">👥 Adversaires disponibles</h2>
       
       {% if availableOpponents is empty %}
         <p class="text-gray-600 text-center py-8">Aucun autre dresseur disponible pour le moment.</p>
       {% else %}
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4" role="list">
           {% for opponent in availableOpponents %}
-            <div class="border border-gray-200 rounded-lg p-4 hover:border-primary transition">
+            <div class="border border-gray-200 rounded-lg p-4 hover:border-primary transition" role="listitem">
               <div class="flex items-center justify-between mb-2">
                 <h3 class="font-bold text-lg">{{ opponent.pseudo }}</h3>
                 {% if opponent.pseudo ends with '_BOT' %}
-                  <span class="bg-purple-100 text-purple-800 text-xs font-semibold px-2 py-1 rounded">🤖 BOT</span>
+                  <span class="bg-purple-100 text-purple-800 text-xs font-semibold px-2 py-1 rounded" aria-label="Adversaire bot">🤖 BOT</span>
                 {% endif %}
               </div>
               <p class="text-sm text-gray-600 mb-3">{{ opponent.email }}</p>
               <form method="post" action="{{ path('app_battle_challenge', {id: opponent.id.toRfc4122}) }}">
                 <input type="hidden" name="_token" value="{{ csrf_token('battle_challenge_' ~ opponent.id.toRfc4122) }}">
-                <button type="submit" class="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary-dark transition">
+                <button type="submit" 
+                        class="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary-dark transition focus:outline-none focus:ring-4 focus:ring-primary focus:ring-opacity-50"
+                        aria-label="Défier {{ opponent.pseudo }}">
                   ⚔️ Défier
                 </button>
               </form>
@@ -95,7 +101,7 @@
     </div>
 
     {# Historique des combats #}
-    <div class="bg-white rounded-lg shadow-lg p-6">
+    <div class="bg-white rounded-lg shadow-lg p-6" role="region" aria-label="Historique des combats">
       <h2 class="text-2xl font-bold mb-4">📜 Historique des combats</h2>
       
       {% if battleHistory is empty %}

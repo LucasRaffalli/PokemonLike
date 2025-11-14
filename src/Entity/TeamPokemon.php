@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\TeamPokemonRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: TeamPokemonRepository::class)]
 class TeamPokemon
@@ -15,15 +16,27 @@ class TeamPokemon
 
     #[ORM\ManyToOne(inversedBy: 'teamPokemons')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull(message: 'L\'utilisateur est requis')]
     private ?User $user = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank(message: 'L\'ID du Pokémon est requis')]
+    #[Assert\Positive(message: 'L\'ID du Pokémon doit être positif')]
+    #[Assert\LessThanOrEqual(1025, message: 'L\'ID du Pokémon ne peut pas dépasser 1025')]
     private ?int $pokemonId = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\NotBlank(message: 'Le nom du Pokémon est requis')]
+    #[Assert\Length(
+        min: 1,
+        max: 100,
+        minMessage: 'Le nom doit contenir au moins {{ limit }} caractère',
+        maxMessage: 'Le nom ne peut pas dépasser {{ limit }} caractères'
+    )]
     private ?string $pokemonName = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Url(message: 'L\'URL de l\'image n\'est pas valide')]
     private ?string $pokemonImage = null;
 
     #[ORM\Column]

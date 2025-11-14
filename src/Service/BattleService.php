@@ -28,7 +28,6 @@ class BattleService
         $battle->addLogEntry("⚔️ Combat Pokémon entre {$challenger->getPseudo()} et {$opponent->getPseudo()}");
         $battle->addLogEntry("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
         
-        // Récupérer les équipes
         $challengerTeam = $challenger->getTeamPokemons()->toArray();
         $opponentTeam = $opponent->getTeamPokemons()->toArray();
 
@@ -48,13 +47,11 @@ class BattleService
         $battle->addLogEntry("📊 {$opponent->getPseudo()} envoie " . count($opponentTeam) . " Pokémon au combat");
         $battle->addLogEntry("");
 
-        // Simuler les combats un par un
         $challengerAlive = count($challengerTeam);
         $opponentAlive = count($opponentTeam);
         $currentChallenger = 0;
         $currentOpponent = 0;
 
-        // HP des Pokémon actuels
         $challengerPokemon = $challengerTeam[$currentChallenger];
         $opponentPokemon = $opponentTeam[$currentOpponent];
         
@@ -69,7 +66,7 @@ class BattleService
         $battle->addLogEntry("");
 
         $turn = 1;
-        $maxTurns = 100; // Limite pour éviter les boucles infinies
+        $maxTurns = 100;
 
         while ($challengerAlive > 0 && $opponentAlive > 0 && $turn <= $maxTurns) {
             $battle->addLogEntry("━━━ Tour {$turn} ━━━");
@@ -118,7 +115,7 @@ class BattleService
                     }
                 }
             } else {
-                // Opponent attaque en premier
+                // adversaires attaque en premier
                 $damage = $this->calculateDamage($opponentStats, $challengerStats);
                 $challengerHP -= $damage;
                 $battle->addLogEntry("⚡ {$opponentPokemon->getPokemonName()} attaque {$challengerPokemon->getPokemonName()} ! -{$damage} HP");
@@ -218,7 +215,6 @@ class BattleService
                 
                 return $stats;
             } catch (\Exception $e) {
-                // En cas d'erreur, retourner des stats par défaut
                 return [
                     'hp' => 100,
                     'attack' => 50,
@@ -240,8 +236,8 @@ class BattleService
         $randomFactor = 0.8 + (rand(0, 40) / 100);
         
         $damage = (int) ($baseDamage * $randomFactor);
-        
-        // Minimum 5 de dégâts, maximum 80
-        return max(5, min(80, $damage));
+
+        // Minimum 5 de dégâts, maximum 200
+        return max(5, min(200, $damage));
     }
 }
