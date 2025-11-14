@@ -1,4 +1,4 @@
-<nav class="fixed top-0 left-0 w-full p-4 z-50" role="navigation" aria-label="Navigation principale">
+<nav class="fixed top-0 left-0 w-full p-4 z-50" id="navbar" role="navigation" aria-label="Navigation principale">
   <div class="mx-auto flex justify-between items-center">
     <a href="{{ path('app_home') }}" class="text-2xl font-bold focus:outline-none focus:ring-4 focus:ring-primary focus:ring-opacity-50" aria-label="Retour à l'accueil">POKEMON LIKE</a>
 
@@ -47,3 +47,14 @@
     </ul>
   </div>
 </nav>
+
+<script>
+  window.addEventListener('scroll', function() {
+    const navbar = document.getElementById('navbar');
+    if (window.scrollY > 50) {
+      navbar.classList.add('bg-white', 'shadow-md');
+    } else {
+      navbar.classList.remove('bg-white', 'shadow-md');
+    }
+  });
+</script>
